@@ -39,11 +39,11 @@ If everything's doing great,then you might see an interface like this:
     └── index.js
 ```
 ## Source Code Brief Explanation
-Starting from ./src/index.js, we render a "Main" component on the root in HTML.  
-In Main.js, we set up links and routers. 
-Then depending which button the user presses, we direct the user to "SpotAll" or "SpotCity" componenet, where we render a list of scenic spots.  
-We're using fetch() syntax to implement the promise structure.  
-Every time the scrolling window intersects with the bottom element, we request another 30 items from the API.  
+Starting from ./src/index.js, we render a "Main" component on the root in HTML.
+In Main.js, we set up links and routers.
+Then depending which button the user presses, we direct the user to "SpotAll" or "SpotCity" componenet, where we render a list of scenic spots.
+Besides, we're using fetch() syntax to implement the promise structure. More specifically, every time the scrolling window intersects with the bottom element, we request another 30 items from the API.  
+
 That't basically how it works!  
 
 ## Enjoy!

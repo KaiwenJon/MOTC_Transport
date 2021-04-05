@@ -3,7 +3,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 # Scenic-Spot Browser App
 A webapp that allows you to visit the "All scenic spots in Taiwan", or just choose some of them in the category of city/country.
 Using React, Router, IntersectionObserver to implement the features.
-We're using API (https://ptx.transportdata.tw/MOTC?t=Tourism&v=2) provided by MOTC.
+Also, we're using API (https://ptx.transportdata.tw/MOTC?t=Tourism&v=2) provided by MOTC.
 
 ## Installation
 

@@ -1,20 +1,21 @@
-import React, { Component} from "react";
+import React, {Component} from "react";
 import Header from "../components/Header";
+import {withRouter } from "react-router-dom"
 
-class SpotApp extends Component {
+class SpotAll extends Component {
     constructor(props){
         super(props);
         this.state = {
             error: null,
+            readyToLoad:true,
             isloaded:false,
             items: [],
             page:0,
         };
         this.loadingRef = React.createRef();
-
     }
     getSpot =(page)=>{
-        console.log("a fetch")
+        this.setState({isloaded:false})
         let URL1 = "https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot?$top=30&$skip="
         let URL2 = (page*30).toString()
         let URL3 = "&$format=JSON"
@@ -27,7 +28,6 @@ class SpotApp extends Component {
                 Array.prototype.push.apply(s.items, result);
                 return s
                 })
-                console.log(result)
             }
             ,
             (error) => {
@@ -37,20 +37,34 @@ class SpotApp extends Component {
               });
             }
             )
-        // console.log(this.state.items)
+            if(page===0){
+                setTimeout(()=>{
+                    let newpage = 1
+                    this.setState({page:newpage})      
+                },1000)
+            }
     }
     handleObserver=()=>{
-        let newpage = this.state.page + 1
-        this.setState({page:newpage})
-        this.getSpot(newpage)
+        if(this.state.readyToLoad && this.state.page!==0 && this.state.isloaded){
+            this.setState({readyToLoad:false})
+            let gopage=this.state.page
+            this.getSpot(gopage)
+            this.setState({page:gopage+1})  
+            setTimeout(()=>{
+                this.setState({readyToLoad:true})
+                console.log("wait ok!")
+            },1000)
+            
+        }
     }
-    componentWillUnmount() {
-        this._isMounted = false;
-        // kill any pending calculations
-    } 
     componentDidMount() {
         let page = 0
         this.getSpot(page)
+        this.setState({readyToLoad:false})
+        setTimeout(()=>{
+            this.setState({readyToLoad:true})
+            console.log("wait ok!")
+        },1000)
         var options = {
             root: null,
             rootMargin: "0px",
@@ -62,9 +76,8 @@ class SpotApp extends Component {
       }
 
     renderSpotList = () =>{
-        const { error, isloaded, items } = this.state;
+        const { error, items } = this.state;
         if (error) {return <div>Error: {error.message}</div> }
-        else if (!isloaded){return <img src="../../public/img/loading.gif" id="loading" alt="back"></img>}
         else{
             return(
                 <ul className="scenic-spot__list" id="spot-list" >
@@ -93,15 +106,10 @@ class SpotApp extends Component {
     render(){
         return(
             <div className={this.props.className}>
-                {/* <div className="scenic-spot__view-buttons">
-                    <button >全部景點列表</button>
-                    <button >縣市景點列表</button>
-                </div> */}
                 <Header text="Scenic Spot (All Scenic Spot))" class="scenic-spot__header"/>
                 <section className="scenic-spot__main">
                 {this.renderSpotList()}
                 </section>
-
                 <div
                     ref={this.loadingRef}
                     style={{height:"50px",width:"100px"}}
@@ -112,4 +120,4 @@ class SpotApp extends Component {
         )
     }
 }
-export default SpotApp;
+export default withRouter(SpotAll);

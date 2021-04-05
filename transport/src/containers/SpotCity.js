@@ -1,35 +1,28 @@
-import React, { Component, Fragment} from "react";
+import React, {Component} from "react";
 import Header from "../components/Header";
-
-import { HashRouter, Route, NavLink,withRouter } from "react-router-dom"
-// import  SpotApp  from "./SpotApp.js"
-import MyRouter from "./MyRouter.js"
+import {withRouter } from "react-router-dom"
 
 class SpotCity extends Component {
     constructor(props){
         super(props);
         this.state = {
             City:this.props.match.params["City"],
-            // City: props.location.state.data,
+            readyToLoad:true,
             error: null,
             isloaded:false,
             items: [],
             page:0,
         };
-        // this.myCity = props.location.state.data
         this.loadingRef = React.createRef();
-
     }
-   
-
     getSpot =(page,city)=>{
-        console.log("a fetch")
+        this.setState({isloaded:false})
         let URL1 = "https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/"
         let URL2 = "?$top=30&$skip="
         let URL3 = (page*30).toString()
         let URL4 = "&$format=JSON"
         fetch(URL1+city+URL2+URL3+URL4,{method: "GET"})
-          .then(res=>res.json())
+          .then(res=>{return res.json()})
           .then(
             (result) => {
               this.setState(s=>{
@@ -37,8 +30,6 @@ class SpotCity extends Component {
                 Array.prototype.push.apply(s.items, result);
                 return s
                 })
-                
-                console.log(result)
             }
             ,
             (error) => {
@@ -46,32 +37,41 @@ class SpotCity extends Component {
                 error:error,
                 isloaded:true
               });
-              console.log("THere's error")
             }
             )
-        // console.log(this.state.items)
+            if(page===0){
+                setTimeout(()=>{
+                    let newpage = 1
+                    this.setState({page:newpage})      
+                },1000)
+            }
     }
     handleObserver=()=>{
-        let newpage = this.state.page + 1
-        this.setState({page:newpage})
-        this.getSpot(newpage,this.state.City)
+        console.log(this.state.isloaded)
+        if(this.state.readyToLoad && this.state.page!==0 && this.state.isloaded){
+            this.setState({readyToLoad:false})
+            let gopage=this.state.page
+            this.getSpot(gopage,this.state.City)
+            this.setState({page:gopage+1})  
+            setTimeout(()=>{
+                this.setState({readyToLoad:true})
+                console.log("wait ok!")
+            },1000)
+        }
     }
     componentWillReceiveProps(nextProps) {
+        console.log("New url so new city")
         let newCity = nextProps.match.params["City"]
         this.setState({
-            City:newCity,error: null,
-            isloaded:false,
+            City:newCity,
+            error: null,
+            isloaded:true,
             items: [],
             page:0,})
         this.getSpot(0,newCity)
     }
-    componentWillUnmount() {
-        this._isMounted = false;
-        // kill any pending calculations
-    } 
     componentDidMount() {
-        let page = 0
-        this.getSpot(page)
+        this.getSpot(0,this.state.City)
         var options = {
             root: null,
             rootMargin: "0px",
@@ -83,9 +83,8 @@ class SpotCity extends Component {
       }
 
     renderSpotList = () =>{
-        const { error, isloaded, items } = this.state;
+        const { error, items } = this.state;
         if (error) {return <div>Error: {error.message}</div> }
-        else if (!isloaded){return <img src="../../public/img/loading.gif" id="loading" alt="back"></img>}
         else{
             return(
                 <ul className="scenic-spot__list" id="spot-list" >
@@ -96,7 +95,7 @@ class SpotCity extends Component {
                         <h1 style={{whiteSpace: "nowrap"}}>{item.Name}</h1>
                         {(()=>{
                             if (Object.keys(item.Picture).length === 0){
-                                return <label style={{fontWeight:"bold"}}>暫時沒有圖片喔~</label>
+                                return <label style={{fontWeight:"bold"}}>此景點暫時沒有圖片喔~</label>
                             }else{
                             return( 
                                 <img src={item.Picture["PictureUrl1"]} style={{maxWidth: "30em",maxHeight:"25em"}} title={item.Picture["PictureDescription1"]} alt={item.Picture["PictureDescription1"]}/>
@@ -112,20 +111,12 @@ class SpotCity extends Component {
         }
     }
     render(){
-        
         return(
-            <Fragment>
-            {/* <MyRouter/> */}
             <div className={this.props.className}>
-                {/* <div className="scenic-spot__view-buttons">
-                    <button >全部景點列表</button>
-                    <button >縣市景點列表</button>
-                </div> */}
                 <Header text={"Scenic Spot ("+this.state.City+")"} class="scenic-spot__header"/>
                 <section className="scenic-spot__main">
                 {this.renderSpotList()}
                 </section>
-
                 <div
                     ref={this.loadingRef}
                     style={{height:"50px",width:"100px"}}
@@ -133,7 +124,6 @@ class SpotCity extends Component {
                     <label>Loading...</label>
                 </div>
             </div>
-            </Fragment>
         )
     }
 }

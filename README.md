@@ -14,7 +14,7 @@ $ npm install && npm start
 ```
 
 ## Warning
-There's a limitation on numbers of requesting an API.
+There's a limitation on numbers of requesting an API every day.
 If that happens, you will find a error message like this: 
 ```shell
 GET https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Hsinchu?$top=30&$skip=60&$format=JSON 429 (Too Many Requests).

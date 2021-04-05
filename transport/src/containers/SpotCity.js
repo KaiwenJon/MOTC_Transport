@@ -46,6 +46,8 @@ class SpotCity extends Component {
                 },1000)
             }
     }
+
+    // When the scrolling window intersects with the ref, trigger the handleObserver().
     handleObserver=()=>{
         console.log(this.state.isloaded)
         if(this.state.readyToLoad && this.state.page!==0 && this.state.isloaded){
@@ -56,9 +58,10 @@ class SpotCity extends Component {
             setTimeout(()=>{
                 this.setState({readyToLoad:true})
                 console.log("wait ok!")
-            },1000)
+            },1000)// To prevent loading page too fast or loading two pages at the same time.
         }
     }
+    // When the Router detects a URL change, this will be triggered.
     componentWillReceiveProps(nextProps) {
         console.log("New url so new city")
         let newCity = nextProps.match.params["City"]

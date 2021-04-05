@@ -14,6 +14,9 @@ class SpotAll extends Component {
         };
         this.loadingRef = React.createRef();
     }
+
+    // When the page is first load, we call getSpot once manually. 
+    // Afterwards, when the scrolling window intersects with ref, getSpot will be triggered.
     getSpot =(page)=>{
         this.setState({isloaded:false})
         let URL1 = "https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot?$top=30&$skip="
@@ -44,6 +47,8 @@ class SpotAll extends Component {
                 },1000)
             }
     }
+
+    // When the scrolling window intersects with the ref, trigger the handleObserver().
     handleObserver=()=>{
         if(this.state.readyToLoad && this.state.page!==0 && this.state.isloaded){
             this.setState({readyToLoad:false})
@@ -53,10 +58,11 @@ class SpotAll extends Component {
             setTimeout(()=>{
                 this.setState({readyToLoad:true})
                 console.log("wait ok!")
-            },1000)
+            },1000) // To prevent loading page too fast or loading two pages at the same time.
             
         }
     }
+    // When the Router detects a URL change, this will be triggered.
     componentDidMount() {
         let page = 0
         this.getSpot(page)

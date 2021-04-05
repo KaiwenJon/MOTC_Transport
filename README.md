@@ -1,6 +1,6 @@
 # MOTC_Transport
 Using React to implement an attractions browsing website
 
-Simply cd to the folder, and
-npm start
+Simply cd to the "transport" folder, and
+"npm start"
 

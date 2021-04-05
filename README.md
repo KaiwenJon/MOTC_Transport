@@ -15,7 +15,7 @@ $ npm install && npm start
 
 ## Warning
 There's a limitation on numbers of requesting an API every day.
-If that happens, you will find a error message like this: 
+If that happens, you will find a error message like this in the console: 
 ```shell
 GET https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Hsinchu?$top=30&$skip=60&$format=JSON 429 (Too Many Requests).
 ```
@@ -37,5 +37,5 @@ If everything's doing great,then you might see an interface like this:
     │   └── SpotAll.js
     │   └── SpotCity.js
     └── index.js
-
+```
 ## Enjoy!
